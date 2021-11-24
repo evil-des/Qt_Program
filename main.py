@@ -1,14 +1,15 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtGui import QPainter, QColor
-from PyQt5 import uic
 import random
+from UI import Ui_MainWindow
 
 
-class Program(QMainWindow):
+class Program(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('UI.ui', self)  # Загружаем дизайн
+        self.setupUi(self)
+
         self.pushButton.clicked.connect(lambda x: self.btnClicked(1))
         self.myFlag = -1
 
@@ -28,9 +29,10 @@ class Program(QMainWindow):
             return
 
         if self.myFlag == 1:
-            qp.setBrush(QColor(255, 255, 0))
             size = random.randint(30, 100)
             position = [random.randint(20, 50) for _ in range(2)]
+            color = [random.randint(0, 256) for _ in range(3)]
+            qp.setBrush(QColor(*color))
             qp.drawEllipse(*position, size, size)
 
 
