@@ -1,39 +1,26 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtGui import QPainter, QColor
-import random
-from UI import Ui_MainWindow
+from PyQt5.QtSql import QSqlDatabase, QSqlTableModel
+# from UI import Ui_MainWindow
+from PyQt5 import uic
 
 
-class Program(QMainWindow, Ui_MainWindow):
+class Program(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
+        uic.loadUi('main.ui', self)
+        self.init_db()
 
-        self.pushButton.clicked.connect(lambda x: self.btnClicked(1))
-        self.myFlag = -1
+    def init_db(self):
+        db = QSqlDatabase.addDatabase('QSQLITE')
+        db.setDatabaseName('coffee.sqlite')
+        db.open()
 
-    def btnClicked(self, i):
-        self.myFlag = i
-        self.update()
+        model = QSqlTableModel(self, db)
+        model.setTable('main')
+        model.select()
 
-    def paintEvent(self, e):
-        super().paintEvent(e)
-        qp = QPainter()
-        qp.begin(self)
-        self.draw_shape(qp)
-        qp.end()
-
-    def draw_shape(self, qp):
-        if self.myFlag != 1:
-            return
-
-        if self.myFlag == 1:
-            size = random.randint(30, 100)
-            position = [random.randint(20, 50) for _ in range(2)]
-            color = [random.randint(0, 256) for _ in range(3)]
-            qp.setBrush(QColor(*color))
-            qp.drawEllipse(*position, size, size)
+        self.table.setModel(model)
 
 
 if __name__ == '__main__':
